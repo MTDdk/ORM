@@ -1,0 +1,29 @@
+
+plugins {
+  id 'java-library'
+  id 'eclipse'
+}
+
+java {
+  toolchain {
+    // compiler options
+    languageVersion = JavaLanguageVersion.of(17)
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+
+dependencies {
+  
+  // unit test
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+  
+}
+
+test {
+  // Use junit platform for unit tests
+  useJUnitPlatform()
+}
