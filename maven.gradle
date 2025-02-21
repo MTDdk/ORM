@@ -1,0 +1,90 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+
+// maven metadata
+
+
+
+java {
+  withJavadocJar()
+  withSourcesJar()
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      group = 'net.javapla.orm'
+      //artifactId = 'orm'
+      //version = project.version
+      
+      from components.java
+      
+      
+      /*versionMapping {
+        usage('java-api') {
+          fromResolutionOf('runtimeClasspath')
+        }
+        usage('java-runtime') {
+          fromResolutionResult()
+        }
+      }*/
+      
+      pom {
+        name = "${rootProject.name}"
+        description = 'Extremely simple database ORM'
+        url = 'https://github.com/MTDdk/ORM'
+        
+        scm {
+          connection = 'scm:git://github.com/MTDdk/ORM.git'
+          developerConnection = 'scm:git:git@github.com:MTDdk/ORM.git'
+          url = 'https://github.com/MTDdk/ORM'
+        }
+
+        licenses {
+          license {
+            name = 'GNU LGPL, Version 3.0'
+            url = 'http://www.gnu.org/licenses/lgpl-3.0.txt'
+          }
+        }
+
+        developers {
+          developer {
+            id = 'MTDdk'
+            name = 'MTDdk'
+            email = 'alvn@alvn.dk'
+          }
+        }
+        
+        issueManagement {
+          system = 'Github Issues'
+          url = 'https://github.com/MTDdk/ORM/issues'
+        }
+      }
+    }
+  }
+  
+  repositories {
+    maven {
+      def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+      def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+      url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+    }
+  }
+  
+}
+
+signing {
+  //required { isReleaseVersion }
+  sign publishing.publications.mavenJava
+}
+
+javadoc {
+  enabled = true
+  
+  if (JavaVersion.current().isJava9Compatible()) {
+    options.addBooleanOption('html5', true)
+  }
+  
+  failOnError = false
+}

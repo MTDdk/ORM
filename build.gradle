@@ -27,3 +27,5 @@ test {
   // Use junit platform for unit tests
   useJUnitPlatform()
 }
+
+apply from: "$rootProject.projectDir/maven.gradle"
