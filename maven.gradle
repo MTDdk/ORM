@@ -3,6 +3,8 @@ apply plugin: 'signing'
 
 
 // maven metadata
+group = 'net.javapla.database'
+//artifactId = 'orm'
 
 
 
@@ -14,21 +16,19 @@ java {
 publishing {
   publications {
     mavenJava(MavenPublication) {
-      group = 'net.javapla.orm'
-      //artifactId = 'orm'
       //version = project.version
       
       from components.java
       
       
-      /*versionMapping {
+      versionMapping {
         usage('java-api') {
           fromResolutionOf('runtimeClasspath')
         }
         usage('java-runtime') {
           fromResolutionResult()
         }
-      }*/
+      }
       
       pom {
         name = "${rootProject.name}"
@@ -69,6 +69,22 @@ publishing {
       def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
       def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
       url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+      
+      gradle.taskGraph.whenReady { taskGraph ->
+        if (taskGraph.hasTask(':generatePomFileForMavenJavaPublication') && !taskGraph.hasTask(':publishToMavenLocal')) {
+        
+          // only do any maven related if we have the needed properties available
+          if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
+            credentials {
+              username = ossrhUsername
+              password = ossrhPassword
+            }
+          } else {
+            throw new GradleException('You do not have your credentials stated')
+          }
+        }
+      }
+      
     }
   }
   
